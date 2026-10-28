@@ -2,130 +2,72 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIT - VTOP Registration</title>
-    <link href="style.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CarbonCare | Vehicle Emission Control</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
-    <div class="main-div">
-        <h2 id="h2_mg">FALL SEMESTER <abbr title="Fully Flexible Credit System">FFCS</abbr> 2026-27</h2>
-        <h2 id="h2_mg1">VIT - VELLORE CAMPUS</h2>
-        <div class="back">
-            <p class="p_tag">
-                <b>(Study System : CBCS - Course System : CBCS) </b>
+  <div class="app-shell">
+    <header class="app-header">
+      <div>
+        <div class="brand-badge">CC</div>
+      </div>
+      <div class="brand-text">
+        <h1>CarbonCare</h1>
+        <p>Emission reduction and vehicle compliance</p>
+      </div>
+      <button id="logoutBtn" class="logout-btn hidden" type="button">Log out</button>
+    </header>
 
-            </p>
-            <p id="datetime"></p>
+    <main class="page">
+      <section id="loginScreen" class="auth-card">
+        <div class="card-header">
+          <span class="eyebrow">Secure access</span>
+          <h2>Login with registered mobile number</h2>
         </div>
-        <div class="button_tag">
-            <button class="button_1" onclick="window.location.href='index.html'">🏠 Home</button>
-            <button class="button_2" onclick="window.location.href='view-modify.html'">📝 View / Modify</button>
-            <button class="button_3" onclick="window.location.href='index_0.html'">📴 SignOut</button>
-        </div>
-        <form class="formed">
-            <div class="box_select">
-                <div class="heading_tag">
-                    <p class="p_marg">Course Registration Option</p>
-                </div>
-                <div class="option_tag">
-                    <div class="quart-width"><input type="radio" name="co" value="course1" /> Compulsory Course</div>
-                    <div class="quart-width"><input type="radio" name="co" value="course2" /> Foundation Core</div>
-                    <div class="quart-width"><input type="radio" name="co" value="course3" /> Discipline-linked Engineering Sciences</div>
-                    <div class="quart-width"><input type="radio" name="co" value="course4" /> Discipline Core</div>
-                    <div class="last-width"><input type="radio" name="co" value="course5" /> Project and Intership</div>
-                </div>
-            </div>
+
+        <form id="loginForm" class="auth-form">
+          <label for="mobileNumber">Registered mobile number</label>
+          <input id="mobileNumber" type="tel" inputmode="numeric" placeholder="Enter 10-digit mobile number" maxlength="10" autocomplete="tel" />
+
+          <button type="submit" class="primary-btn">Login</button>
         </form>
-        <div class="Btn">
-            <button class="pro-btn" id="proceedBtn">Proceed</button>
+
+        <div class="demo-note">
+          Demo numbers: <strong>9876543210</strong>, <strong>8123456789</strong>, <strong>9012345678</strong>
         </div>
-    </div>
-    <div class="custom-alert-overlay" id="customAlertOverlay">
-        <div class="custom-alert-box">
-            <p id="customAlertMessage"></p>
-            <button id="customAlertClose">OK</button>
+      </section>
+
+      <section id="dashboardScreen" class="dashboard hidden">
+        <div class="summary-grid">
+          <article class="summary-card blue">
+            <span class="label">Total vehicles</span>
+            <strong id="totalVehicles">0</strong>
+          </article>
+          <article class="summary-card green">
+            <span class="label">Total driving distance</span>
+            <strong id="totalDistanceSummary">0 km</strong>
+          </article>
+          <article class="summary-card orange">
+            <span class="label">Fine amount</span>
+            <strong id="totalFineSummary">₹0</strong>
+          </article>
+          <article class="summary-card red">
+            <span class="label">Alerts</span>
+            <strong id="alertCount">0</strong>
+          </article>
         </div>
-    </div>
-    <script>
-        $(document).ready(function() {
 
-            // ---------- Date & Time ----------
-            function updateDateTime() {
-                const now = new Date();
-                $("#datetime").html(
-                    now.toLocaleDateString("en-GB", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric"
-                    }) + " | " +
-                    now.toLocaleTimeString("en-US")
-                );
-            }
-            updateDateTime();
-            setInterval(updateDateTime, 1000);
+        <div id="alertPanel" class="alert-panel"></div>
 
-            function showCustomAlert(message) {
-                $("#customAlertMessage").text(message);
-                $("#customAlertOverlay").css("display", "flex");
-            }
+        <div id="vehicleList" class="vehicle-grid"></div>
+      </section>
+    </main>
+  </div>
 
-            $("#customAlertClose").on("click", function() {
-                $("#customAlertOverlay").css("display", "none");
-            });
-
-            // ---------- Check if all compulsory courses are registered ----------
-            function compulsoryCoursesDone() {
-                const compulsoryCourses = ["ISWE103L", "ISIT207L"]; // add more if there are others
-                const registeredCourses = JSON.parse(localStorage.getItem("registeredCourses")) || {};
-                return compulsoryCourses.every(
-                    (code) => registeredCourses.hasOwnProperty(code)
-                );
-            }
-
-            // ---------- Proceed Button ----------
-            $("#proceedBtn").on("click", function() {
-                let selected = $('input[name="co"]:checked').val();
-
-                if (!selected) {
-                    showCustomAlert("Please select a course option before proceeding.");
-                    return;
-                }
-
-                // Compulsory Course is always accessible
-                if (selected === "course1") {
-                    window.location.href = "course1.html";
-                    return;
-                }
-
-                // Everything else requires compulsory courses to be fully registered first
-                if (!compulsoryCoursesDone()) {
-                    showCustomAlert("Please complete registration for all Compulsory Courses before proceeding to other categories.");
-                    return;
-                }
-
-                switch (selected) {
-                    case "course2":
-                        window.location.href = "course2.html";
-                        break;
-                    case "course3":
-                        window.location.href = "course3.html";
-                        break;
-                    case "course4":
-                        window.location.href = "course4.html";
-                        break;
-                    case "course5":
-                        showCustomAlert("You are not applicable for this.");
-                        break;
-                    default:
-                        showCustomAlert("Please select a course option before proceeding.");
-                }
-            });
-
-        });
-    </script>
+  <script src="script.js"></script>
 </body>
 
 </html>

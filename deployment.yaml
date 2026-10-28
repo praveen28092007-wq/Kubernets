@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vit-course-registration
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: vit-course-registration
+  template:
+    metadata:
+      labels:
+        app: vit-course-registration
+    spec:
+      containers:
+        - name: website
+          image: khaleelur/vit-course-registration:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
